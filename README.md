@@ -1,10 +1,10 @@
 # Vacations itinerary
 
-The objective of the project is the creation of an application allowing to propose a route according to certain criteria.
+The objective of the project is the creation of an application able to suggest a route according to certain criteria.
 
 ## Description
 
-The user of the application chooses areas / places and the duration of the stay and the app proposes a detailed itinerary optimizing his travel and stay time.
+The user of the application chooses areas / places and the duration of the stay and the app suggests a detailed itinerary optimizing his travel and stay time.
 
 ## Getting Started
 
