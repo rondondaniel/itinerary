@@ -54,12 +54,9 @@ python -m main.y
 ## Documentation
 
 Detailed documentation
-* Phase 1 
-    * fr: [Etape 1](/doc/fr/etape1.md)
-    * en: ...
-* Phase 2
-    * fr: [Etape 2](/doc/fr/)
-    * en: ...
+
+* [Etape 1](/doc/etape1.md)
+* [Etape 2](/doc/etape2.md)
 
 ## Authors
 
