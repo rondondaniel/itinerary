@@ -1,0 +1,30 @@
+version: '3'
+services:
+  #myapplication:
+  #  image: myapp:1.0
+  #  environment: 
+  #    - MONGODB_CONNSTRING=mongodb://AzureDiamond:hunter2@mongodb
+  #  ports:
+  #    - 3000:3000
+  mongodb:
+    image: mongo:6.0    
+    volumes:
+    #  - /data/db:/src/databse/mongodir
+    ports:
+      - "27017:27017"
+    #environment:
+    #  - MONGO_INITDB_ROOT_USERNAME=AzureDiamond
+    #  - MONGO_INITDB_ROOT_PASSWORD=hunter2
+  neo4j:
+    image: datascientest/neo4j
+    #volumes:
+    #  - /data/db:/src/databse/neo4jdir
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      #SPRING_NEO4J_URI: bolt://storage:9001
+      SPRING_NEO4J_AUTHENTICATION_USERNAME: neo4j
+      SPRING_NEO4J_AUTHENTICATION_PASSWORD: neo4j
+#volumes:
+#  myapp:

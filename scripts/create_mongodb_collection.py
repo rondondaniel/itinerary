@@ -12,7 +12,7 @@ print(client.list_database_names())
 voyage = client["voyage"]
 
 # Create a collection called POI
-# voyage.drop_collection('POI') # Drop collection if already exists 
+voyage.drop_collection('POI') # Drop collection if already exists 
 voyage.create_collection(name='POI')
 print(voyage.list_collection_names())
 

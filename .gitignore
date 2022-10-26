@@ -143,6 +143,11 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# Project
+.DS_Store
+data/
+src/database/mongodir
+
 # Pyre type checker
 .pyre/
 
