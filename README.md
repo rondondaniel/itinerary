@@ -41,9 +41,15 @@ python -m pip install requirements.txt
 ### Executing program
 
 #### Docker
-* Run the built container
+* Create a .env file at root of the project
+* Add Neo4j secrets:
 ```bash
-docker run --name itinerary -p 5000:5001
+NEO4J_AUTHENTICATION_USERNAME="YOUR_USERNAME"
+NEO4J_AUTHENTICATION_PASSWORD="YOUR_PASSWORD"
+```
+* Run docker-compose file
+```bash
+docker-compose up -d
 ```
 #### From source
 * Run using python

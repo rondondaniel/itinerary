@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pprint import pprint
 import json
+import pandas as pd
 
 # Make sure to have a MongoDB instance running
 # with Docker : docker run -d -p 27017:27017 --name mongo mongo 
@@ -18,7 +19,9 @@ print(voyage.list_collection_names())
 
 def insert_data(collection):
     with open("data/index.json", 'r', encoding='utf-8') as f:
-        df = json.load(f) #.decode('utf-8')
+        records = json.load(f) #.decode('utf-8')
+
+    df = pd.DataFrame.from_dict(records)
             
     for file_link in df['file']:
         with open('data/objects/' + file_link, "r") as json_file:
