@@ -144,6 +144,7 @@ venv.bak/
 dmypy.json
 
 # Project
+.DS_Store
 data/
 src/database/mongodir
 
