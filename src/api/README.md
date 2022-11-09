@@ -10,10 +10,10 @@ To run the API in standalone mode, use the command below:
 ## API Routes
 
 ### /
-Let you check the API health
+Let check the API health
 
 ### /cities
-Get the name of all cities in the database
+Get the name of all cities available in the database
 
 ### /poi/city/{city}
 Get POI information from a city

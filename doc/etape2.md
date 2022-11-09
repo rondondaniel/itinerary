@@ -1,16 +1,16 @@
 # Etape 2 : Architecture de l'Organisation des données
 
 ## 1. Architecture choisie
-Un exemple de l'architecture choisie est sur l'image ci-dessous. Sur cette étude de cas où l'utilisateur choisi une ville et une durée du voyage :
+L'architecture choisie est schématisée sur l'image ci-dessous, sur ce cas l'utilisateur choisi une ville et une durée du voyage :
 
 ![Itinerary Use Case][def]
 
-L'architecture est divisée en Ingress, Databases, Backend, Frontend, et finalement une UI.
+L'architecture est donc divisée en Ingress, Databases, Backend, Frontend et UI.
 
 ### a) Ingress
 Cette partie de l'architecture récupère les données de la source. Ceci se fait par l'intermédiaire d'un script, appelé [create_mongodb_collection.py][def3]. 
 
-Ensuite, un deuxième script, [create_neo4j_graph_example.py][def4] , s'en charge de extraire et de filtrer les données nécessaires à la création de la base de données Neo4j.
+Ensuite, un deuxième script, [create_neo4j_graph_example.py][def4] , s'en charge d'extraire et de filtrer les données nécessaires à la création de la base de données Neo4j.
 
 ### b) Databases
 Comme évoqué ci-dessus, deux databases sont utilisées : MongoDB et Neo4j.
@@ -19,7 +19,7 @@ Comme évoqué ci-dessus, deux databases sont utilisées : MongoDB et Neo4j.
 Ce type de base de données de documents a été choisie par sa simplicité. Étant donné que les fichiers récupérés de la source sont en format JSON, il a été relativement rapide et efficace d'alimenter la base de données MongoDB. La rapidité et la fixibilité d’accès sont deux points importants pour notre projet.
 
 #### II. Neo4j :
-Comme l'objective final est de fournir un itinéraire, la base de données de type « Graph » nous semble un choix évident. C'est pour cette raison qu'une base Neo4j est implémentée. Elle servira essentiellement à créer l'itinéraire à partir des entrées de l'utilisateurs.
+Comme l'objective final est de fournir un itinéraire, la base de données de type « Graph » nous semble un choix évident. C'est pour cette raison qu'une base Neo4j est implémentée en parallèle à la base MongoDB. Elle servira essentiellement à créer l'itinéraire à partir des entrées de l'utilisateurs.
 
 ### c) Backend
 Le backend est constitué par une API et sa logique métier ("Business Logic") :
