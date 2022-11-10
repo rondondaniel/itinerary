@@ -1,10 +1,15 @@
 from fastapi import FastAPI
-from business_logic import Mongo
+from business_logic import Mongo, Itinerary
+from pydantic import BaseModel
 import pandas as pd
 import json
 
-# Load Business Logic for MongoDB database
+# Instanciate Business Logic
 mongo = Mongo()
+itinerary = Itinerary()
+
+class Labels(BaseModel):
+    labels: list
 
 api = FastAPI(
     title ='Vacancy Itenerary API',
@@ -19,9 +24,11 @@ def get_index():
     Returns:
         json:  message with API status
     """
-    return {'API Status': 'Running'}
+    return {'API Status': 'Running',
+            'MongoDB:': mongo.check()
+    }
 
-@api.get('/cities', name="Get list of cities")
+@api.get('/city', name="Get list of cities")
 def get_cities():
     """Get list of name of all cities into the database
 
@@ -30,19 +37,31 @@ def get_cities():
     """
     return mongo.get_cities()
 
-@api.get('/poi/city/{city:str}', name="Get list of POI for a city")
-def get_poi(city):
-    """Get POI information from a city
+@api.get('/poi/city/{city:str}', name="Get list of all POI for a city")
+def get_poi(city:str):
+    """Get all POI information from a city
 
     Args:
         city (str): name of the city
 
     Returns:
-        json: list of poi inforamtion
+       json: A json list with all poi inforamtion
     """
-    return json.dumps(mongo.get_poi_by_city(city))
+    return mongo.get_poi_by_city(city)
 
-@api.get('/poi/region/{region:str}', name="Get list of regions")
-def get_poi(region):
+@api.get('/poi/city/{city:str}/itinerary', name="Get optimized itinearary paths")
+def get_itinerary(city: str, labels:Labels):
+    """Get all POI information from a city
+
+    Args:
+        city (str): name of the city
+
+    Returns:
+       json: A json list with all poi inforamtion
+    """
+    return itinerary.get_itinerary(city, labels)
+
+@api.get('/poi/region/{region:int}', name="Get list of regions")
+def get_poi(region:int):
     
     return region

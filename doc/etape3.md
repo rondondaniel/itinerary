@@ -20,7 +20,7 @@ Cette interphase entre le client et la logique métier est basée sur le framewo
   </tr>
   <tr>
     <td>GET</td>
-    <td>/cities</td>
+    <td>/city</td>
     <td>Non</td>
     <td>Obtenir le nom de toutes les villes disponibles dans la base de données</td>
   </tr>
@@ -29,6 +29,12 @@ Cette interphase entre le client et la logique métier est basée sur le framewo
     <td>/poi/city/{city}</td>
     <td>Non</td>
     <td>Obtenir des informations sur les POI d'une ville</td>
+  </tr>  
+  <tr>
+    <td>POST</td>
+    <td>/poi/city/{city}/itinerary</td>
+    <td>Non</td>
+    <td>Obtenir des chemins itinéaires optimisés</td>
   </tr>
   <tr>
     <td>GET</td>
