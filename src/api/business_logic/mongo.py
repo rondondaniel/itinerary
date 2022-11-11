@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 import pandas as pd
-import json
 from bson.json_util import dumps
 import pprint as pp
 
@@ -27,21 +26,18 @@ class Mongo:
 
         return clean_col
     
-    def get_cities(self):
+    def get_city(self):
         cities = self.get_poi().distinct("commune")
 
         return cities
 
     def get_poi_by_city(self, city):
-        cursor_poi = list(self.get_poi().find(filter={'commune': city}))
-        poi = dumps(cursor_poi, indent=2)
-
+        poi = list(self.get_poi().find(filter={'commune': city}))
+        
         return  poi
 
-    def get_itinerary(self, city, labels):
-        return {'hello': city,
-                'labels': labels
-        }
+    def get_poi_by_labels(self, city, labels):
+        return
 
 if __name__ == '__main__':
     mongo = Mongo()

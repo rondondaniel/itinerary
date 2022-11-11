@@ -2,14 +2,14 @@ from fastapi import FastAPI
 from business_logic import Mongo, Itinerary
 from pydantic import BaseModel
 import pandas as pd
-import json
+from bson.json_util import dumps
 
 # Instanciate Business Logic
 mongo = Mongo()
 itinerary = Itinerary()
 
 class Labels(BaseModel):
-    labels: list
+    labels: list[str] = []
 
 api = FastAPI(
     title ='Vacancy Itenerary API',
@@ -29,13 +29,13 @@ def get_index():
     }
 
 @api.get('/city', name="Get list of cities")
-def get_cities():
+def get_city():
     """Get list of name of all cities into the database
 
     Returns:
         list: name of all cities into the database
     """
-    return mongo.get_cities()
+    return dumps(mongo.get_city())
 
 @api.get('/poi/city/{city:str}', name="Get list of all POI for a city")
 def get_poi(city:str):
@@ -47,7 +47,7 @@ def get_poi(city:str):
     Returns:
        json: A json list with all poi inforamtion
     """
-    return mongo.get_poi_by_city(city)
+    return dumps(mongo.get_poi_by_city(city), indent=2)
 
 @api.get('/poi/city/{city:str}/itinerary', name="Get optimized itinearary paths")
 def get_itinerary(city: str, labels:Labels):
