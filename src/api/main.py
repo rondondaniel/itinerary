@@ -15,7 +15,7 @@ api = FastAPI(
     title ='Vacancy Itenerary API',
     description="API is to query itenerary app databases.",
     version="0.1"
-    )
+)
 
 @api.get('/', name="Check health")
 def get_index():

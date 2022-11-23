@@ -62,18 +62,26 @@ class Itinerary():
             coordinates = cluster[['longitude', 'latitude']].values.tolist()
 
             if len(coordinates)==1:
-                marker.append(coordinates)
+                # To Improve
+                for c in coordinates:
+                    marker.append(c) 
             elif len(coordinates) in [2,3]:
-                marker.append(coordinates)
+                # To Improve
+                for c in coordinates:
+                    marker.append(c) 
                 polyline.append(self.route(coordinates))
             else:
-                marker.append(coordinates)
+                # To Improve
+                for c in coordinates:
+                    marker.append(c) 
                 polyline.append(self.route(coordinates, options=True))
+        
+        feature_markers = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} for m in marker]
+        markers_geojson = {"type": "FeatureCollection", "features":feature_markers}
 
-        return {
-            'Marker': marker, 
-            'Polyline': polyline
-        }
+        polyline_geojson =  {"type": "FeatureCollection", "features":{"type":"Feature","geometry":{"type":"MultiLineString","coordinates":polyline}}}
+        
+        return markers_geojson, polyline_geojson
 
     def get_itinerary(self, city, labels):
         nb_clusters = 4
@@ -83,10 +91,6 @@ class Itinerary():
         data = df.loc[df.label.isin(labels.labels), ['identifier', 'label', 'longitude', 'latitude']]
 
         df_cluster = self.clustering_kmeans(data, nb_clusters)
-        paths = self.get_paths(df_cluster, nb_clusters)
+        markers, paths = self.get_paths(df_cluster, nb_clusters)
 
-        return {
-            'City': city,
-            'POI Clusters': df_cluster.to_dict(),
-            'Itinerary': paths
-        }
+        return markers, paths
