@@ -122,13 +122,14 @@ class Itinerary():
                 polyline.append(self.route(coordinates, options=True))
         
         # Dict to create markers and itinerary paths features in GeoJSON format
-        # It can be replace into a new method
-        feature_markers = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} for m in marker]
-        markers_geojson = {"type": "FeatureCollection", "features":feature_markers}
+        # It could be replaced into a new method
+        features = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} for m in marker]
+        feature_polyline =  {"type":"Feature","geometry":{"type":"MultiLineString","coordinates":polyline}}
+        features.append(feature_polyline)
 
-        polyline_geojson =  {"type": "FeatureCollection", "features":{"type":"Feature","geometry":{"type":"MultiLineString","coordinates":polyline}}}
+        paths_geojson = {"type": "FeatureCollection", "features":features}
         
-        return markers_geojson, polyline_geojson
+        return paths_geojson
 
     def get_itinerary(self, city: str, labels: list):
         """ Main method called from API
@@ -138,8 +139,8 @@ class Itinerary():
             labels (list): POI names
 
         Returns:
-            markers (Dict): POI locations in points GeoJSON format
-            paths (Dict): itineraries paths in polyline GeoJSON format
+            markers (dict): POI locations in points GeoJSON format
+            paths (dict): itineraries paths in polyline GeoJSON format
         """  
 
         # Custers number hard coded. Should be an input.
@@ -151,6 +152,6 @@ class Itinerary():
         data = df.loc[df.label.isin(labels.labels), ['identifier', 'label', 'longitude', 'latitude']]
 
         df_cluster = self.clustering_kmeans(data, nb_clusters)
-        markers, paths = self.get_paths(df_cluster, nb_clusters)
+        paths = self.get_paths(df_cluster, nb_clusters)
 
-        return markers, paths
+        return paths
