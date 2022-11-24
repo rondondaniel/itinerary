@@ -1,6 +1,5 @@
-from pymongo import MongoClient, errors
+from business_logic import DataBase
 
-# Business Logic MongoDB database
 class Mongo:
     """ Class acting as micro-service to get
         basic information from mongo data base
@@ -8,36 +7,29 @@ class Mongo:
 
 
     def __init__(self):
-        self.connect_string = "mongodb://localhost:27017/"
+        pass
 
     def check(self):
-        """ Check health of the data base
+        """ Check health of the database
 
         Returns:
             response (dict): server info if connection is ok
                                 or an error message if not.
         """        
-        response = {'ok': 'No'}
-
-        try:
-            client = MongoClient(self.connect_string)
-            response = client.server_info()
-        except errors.ServerSelectionTimeoutError as err:
-            response = err
+                
+        response = DataBase.check()
 
         return response
 
     def get_poi(self):
-        """ Get bulk information from the Database
+        """ Get bulk information from the database
 
         Returns:
             clean_col (collection object): bulk information as 
                                             mongo collection object
         """     
 
-        client = MongoClient(self.connect_string)
-        voyage = client["voyage"]
-        clean_col = voyage.clean_POI
+        clean_col = DataBase.get_poi()
 
         return clean_col
     
@@ -47,19 +39,21 @@ class Mongo:
         Returns:
             cities (list): list of cities
         """        
+
         cities = self.get_poi().distinct("commune")
 
         return cities
 
     def get_poi_by_city(self, city: str):
-        """_summary_
+        """ Get the list of POI's by a selected city
 
         Args:
-            city (_type_): _description_
+            city (str): selected city
 
         Returns:
-            _type_: _description_
-        """        
+            poi (list): list of POI's in the database
+        """     
+
         poi = list(self.get_poi().find(filter={'commune': city}))
         
         return  poi
@@ -71,5 +65,5 @@ class Mongo:
             city (str): _description_
             labels (list): _description_
         """        
-        
+
         return

@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from business_logic import Mongo
+from business_logic import DataBase
 from sklearn.cluster import KMeans
 import openrouteservice as ors
 from dotenv import load_dotenv
@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 # Load env variables from .env file
 load_dotenv()
 
-mongo = Mongo()
+# Stores openrouteservice API Key
+ORS_API_KEY = os.getenv('ORS_API_KEY') 
 
 class Itinerary():
     """ Class acting as micro-service
@@ -17,8 +18,7 @@ class Itinerary():
 
 
     def __init__(self):
-        # Stores openrouteservice API Key
-        self.ORS_API_KEY = os.getenv('ORS_API_KEY') 
+       pass
     
     def clustering_kmeans(self, data, nb_clusters: int):
         """ Method to determine clusters matching
@@ -62,7 +62,7 @@ class Itinerary():
         """        
 
         # openrouteservice client
-        client = ors.Client(self.ORS_API_KEY)
+        client = ors.Client(ORS_API_KEY)
         
         if not options:
             route = client.directions(
@@ -144,7 +144,8 @@ class Itinerary():
 
         # Custers number hard coded. Should be an input.
         nb_clusters = 4
-        df = pd.DataFrame(list(mongo.get_poi_by_city(city)))
+
+        df = pd.DataFrame(list(DataBase.get_poi().find(filter={'commune': city})))
         df = df.drop_duplicates(subset='label')
         
         data = df.loc[df.label.isin(labels.labels), ['identifier', 'label', 'longitude', 'latitude']]
