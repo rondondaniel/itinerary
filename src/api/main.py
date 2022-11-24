@@ -24,8 +24,9 @@ def get_index():
     Returns:
         json:  message with API status
     """
-    return {'API Status': 'Running',
-            'MongoDB:': mongo.check()
+    return {
+        'API Status': 'Running',
+        'MongoDB:': mongo.check()
     }
 
 @api.get('/city', name="Get list of cities")

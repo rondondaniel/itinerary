@@ -11,10 +11,29 @@ load_dotenv()
 mongo = Mongo()
 
 class Itinerary():
+    """ Class acting as micro-service
+        to calculate itineraries
+    """    
+
+
     def __init__(self):
-       self.ORS_API_KEY = os.getenv('ORS_API_KEY')
+        # Stores openrouteservice API Key
+        self.ORS_API_KEY = os.getenv('ORS_API_KEY') 
     
-    def clustering_kmeans(self, data, nb_clusters):    
+    def clustering_kmeans(self, data, nb_clusters: int):
+        """ Method to determine clusters matching
+            closest POI's
+
+        Args:
+            data (DataFrame): Coordinates, label, etc.
+            nb_clusters (int): number of clusters to use 
+                                for classification
+
+        Returns:
+            DataFrame: data dataframe + Cluster classification  
+                        information using pandas concat method
+        """        
+
         # Conversion de latitude et longitude en float
         data['longitude'] = data['longitude'].astype('float')
         data['latitude'] = data['latitude'].astype('float')
@@ -22,13 +41,27 @@ class Itinerary():
         km = KMeans(n_clusters=nb_clusters, random_state = 222)
         X = data[['longitude','latitude']].values
         predictions = km.fit_predict(X) 
-        X_dist = 1000*km.transform(X)**2
+        X_dist = 1000 * km.transform(X) ** 2
 
         return pd.concat([data.reset_index(drop=True), 
                           pd.DataFrame({'Cluster':predictions}),
                           pd.DataFrame({'sqdist':X_dist.sum(axis=1).round(2)})], axis=1)
 
     def route(self, coordinates, options=False):
+        """ Calculate best route itinerary using 
+            openrouteservice API
+
+        Args:
+            coordinates (DataFrame): POI's coordinates
+            options (bool, optional): if True pass a options argument to
+                                        openrouteservice's direction method. 
+                                        Defaults to False.
+
+        Returns:
+            List: coordinates of the itineray paths
+        """        
+
+        # openrouteservice client
         client = ors.Client(self.ORS_API_KEY)
         
         if not options:
@@ -50,8 +83,19 @@ class Itinerary():
 
         return route['features'][0]['geometry']['coordinates']
     
-    def get_paths(self, clusters_data, nb_clusters):     
-        
+    def get_paths(self, clusters_data, nb_clusters: int):
+        """ Method to construct intineraries and markers 
+            in GeoJSON format
+
+        Args:
+            clusters_data (DataFrame): POI data including clusters information
+            nb_clusters (int): number of classified clusters
+
+        Returns:
+            markers_geojson (dict): POI locations in points GeoJSON format
+            polyline_geojson (dict): itineraries paths in polyline GeoJSON format
+        """        
+
         marker = []
         polyline = []
         for nb_cluster in range(nb_clusters):
@@ -61,6 +105,7 @@ class Itinerary():
 
             coordinates = cluster[['longitude', 'latitude']].values.tolist()
 
+            # 
             if len(coordinates)==1:
                 # To Improve
                 for c in coordinates:
@@ -76,6 +121,8 @@ class Itinerary():
                     marker.append(c) 
                 polyline.append(self.route(coordinates, options=True))
         
+        # Dict to create markers and itinerary paths features in GeoJSON format
+        # It can be replace into a new method
         feature_markers = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} for m in marker]
         markers_geojson = {"type": "FeatureCollection", "features":feature_markers}
 
@@ -83,7 +130,19 @@ class Itinerary():
         
         return markers_geojson, polyline_geojson
 
-    def get_itinerary(self, city, labels):
+    def get_itinerary(self, city: str, labels: list):
+        """ Main method called from API
+
+        Args:
+            city (str): city to get POI's
+            labels (list): POI names
+
+        Returns:
+            markers (Dict): POI locations in points GeoJSON format
+            paths (Dict): itineraries paths in polyline GeoJSON format
+        """  
+
+        # Custers number hard coded. Should be an input.
         nb_clusters = 4
         df = pd.DataFrame(list(mongo.get_poi_by_city(city)))
         df = df.drop_duplicates(subset='label')
