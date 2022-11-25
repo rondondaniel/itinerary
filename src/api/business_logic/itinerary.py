@@ -91,9 +91,9 @@ class Itinerary():
             clusters_data (DataFrame): POI data including clusters information
             nb_clusters (int): number of classified clusters
 
-        Returns:
-            markers_geojson (dict): POI locations in points GeoJSON format
-            polyline_geojson (dict): itineraries paths in polyline GeoJSON format
+        Returns:            
+            paths_geojson (dict): POI locations as points itineraries paths
+                                    as multi-polylines packaged in GeoJSON format
         """        
 
         marker = []
@@ -139,8 +139,8 @@ class Itinerary():
             labels (list): POI names
 
         Returns:
-            markers (dict): POI locations in points GeoJSON format
-            paths (dict): itineraries paths in polyline GeoJSON format
+            paths (dict): POI locations as points itineraries paths
+                            as multi-polylines packaged in GeoJSON format
         """  
 
         # Custers number hard coded. Should be an input.
