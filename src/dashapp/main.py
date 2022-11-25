@@ -46,7 +46,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_
 app.layout = html.Div(
         [
             html.H1(
-                'Itinaires de Vacances', 
+                'Itineraires de Vacances', 
                 style={
                   'textAlign': 'center'
                 }, 
@@ -60,7 +60,6 @@ app.layout = html.Div(
                 ),
                 dcc.Checklist(
                     id='poi-checklist',
-                    inline=False
                 ),
               ]),
               dbc.Col(dl.Map(
@@ -95,7 +94,12 @@ def update_checklist(value):
 
         response = requests.request("GET", _url)
 
-    labels = json.loads(response.json())
+    poi_list = json.loads(response.json())
+    
+    labels = []
+    for i in range(len(poi_list)):
+        labels.append(poi_list[i]['label'])
+
     print("labels:", labels)
 
     return labels
