@@ -11,10 +11,7 @@ The user of the application chooses areas / places and the duration of the stay 
 ### Dependencies
 
 * Python3.8
-* SQL: SQLAlchemy
-* MongoDB: pymongo
-* Neo4j
-* 
+* MongoDB: pymongo 
 
 ### Installing
 
@@ -42,11 +39,7 @@ python -m pip install requirements.txt
 
 #### Docker
 * Create a .env file at root of the project
-* Add Neo4j secrets:
-```bash
-NEO4J_AUTHENTICATION_USERNAME="YOUR_USERNAME"
-NEO4J_AUTHENTICATION_PASSWORD="YOUR_PASSWORD"
-```
+
 * Run docker-compose file
 ```bash
 docker-compose up -d
@@ -57,18 +50,18 @@ docker-compose up -d
 python -m main.y
 ```
 
-## Documentation
+## Detailed documentation
 
-Detailed documentation
-
-* [Etape 1](/doc/etape1.md)
-* [Etape 2](/doc/etape2.md)
+* [Stage 1: Collecting data](/doc/etape1.md)
+* [Stage 2: Data architecture](/doc/etape2.md)
+* [Stage 3: Data consumption](/doc/etape3.md)
+* [Stage 4: Automation of data flow](/doc/etape4.md)
 
 ## Authors
 
 Contributors names and contact info
 
-* Laeticia Malingre
+* Laeticia Malingre *laeticia.malingre@gmail.com*
 * Marylis Rubrice
 * Daniel Rondon - *rondondaniel@gmail.com*
 
@@ -88,6 +81,7 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 ## Acknowledgments
 
 Inspiration, code snippets, source data, etc.
+
 * [Datascientest](https://wwww.datascientest.com)
 * [Citymapper](https://www.citymapper.com)
 * [DataTourisme](https://www.datatourisme.fr/)

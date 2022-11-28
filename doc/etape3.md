@@ -1,15 +1,16 @@
-# Etape : Consommation des données
+# Etape 3 : Consommation des données
 
 ## 1. API
-Cette interphase entre le client et la logique métier est basée sur le framework FastAPI. Nous avons choisi ce framework car il est performant et rapide à prendre en main. Afin d'approfondire sur le functionnement de l'API il est également possible de lire directement la [doc dédié à l'API][def].
+
+Cette interface entre le client et la logique métier est basée sur le framework FastAPI. Nous avons choisi ce framework car il est performant et rapide à prendre en main. Afin d'approfondir le fonctionnement de l'API il est également possible de lire la [documentation dédiée à l'API](../src/api/README.md).
 
 ### API Enpoints
 
  <table>
   <tr>
-    <th>Verbe</th>
+    <th>Méthode</th>
     <th>Endpoint</th>
-    <th>Autho ?</th>
+    <th>Authorisation</th>
     <th>Retourne</th>
   </tr>
   <tr>
@@ -34,23 +35,15 @@ Cette interphase entre le client et la logique métier est basée sur le framewo
     <td>POST</td>
     <td>/poi/city/{city}/itinerary</td>
     <td>Non</td>
-    <td>Obtenir des chemins itinéaires optimisés</td>
-  </tr>
-  <tr>
-    <td>GET</td>
-    <td>/poi/region/{region}</td>
-    <td>Non</td>
-    <td>Obtenir des informations sur les POI d'une région entière</td>
+    <td>Obtenir des itinéraires optimisés</td>
   </tr>
 </table> 
 
 ## 2. Clustering
 
-### Bibliographie :
-En ce qui concerne la partie Machine Learning, nous avons trouvé l'inspireation à partir des articles ci-dessous :
-* https://www.researchgate.net/publication/340909418_Improving_itinerary_recommen
-dations_for_tourists_through_metaheuristic_algorithms_an_optimization_proposal
-* https://towardsdatascience.com/using-unsupervised-learning-to-plan-a-paris-vacation
--geo-location-clustering-d0337b4210de
+En ce qui concerne la partie Machine Learning, nous nous sommes inspirés des articles ci-dessous :
 
-[def]: ../src/api/README.md
+* [Improving Itinerary Recommendations for Tourists Through Metaheuristic Algorithms: An Optimization Proposal](https://www.researchgate.net/publication/340909418_Improving_itinerary_recommen
+dations_for_tourists_through_metaheuristic_algorithms_an_optimization_proposal)
+* [Using Unsupervised Learning to plan a vacation to Paris: Geo-location clustering](https://towardsdatascience.com/using-unsupervised-learning-to-plan-a-paris-vacation
+-geo-location-clustering-d0337b4210de) 
