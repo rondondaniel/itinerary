@@ -2,7 +2,7 @@
 import dash
 import dash_leaflet as dl
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from dash import dcc, html
 import requests
 import json
@@ -37,12 +37,12 @@ headers = {
 
 get_cities = json.loads(requests.request('GET', 'http://127.0.0.1:8000/city').json())
 
-response = requests.request('GET', url, headers=headers, data=payload)
-data = response.json()
+#response = requests.request('GET', url, headers=headers, data=payload)
+#data = response.json()
 
 # Load styles
-external_stylesheets = ['bootstrap.css']
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
+#external_stylesheets = ['bootstrap.css']
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=False)
 app.layout = html.Div(
         [
             html.H1(
@@ -58,51 +58,47 @@ app.layout = html.Div(
                     options=get_cities,
                     id='city-dropdown'
                 ),
-                dcc.Checklist(
+                dbc.Checklist(
                     id='poi-checklist',
+                    labelCheckedClassName="text-success",
+                    input_checked_style={'margin-right': '10px'}
                 ),
-              ]),
+
+              ], width=4),
               dbc.Col(dl.Map(
                 [
                     dl.TileLayer(), 
-                    dl.GeoJSON(data=data)
+                    #dl.GeoJSON(data=data)
                 ],
                 center=(
                     44.844, -0.577
                 ),
                 zoom=12,
                 style={
-                    'width': '1000px', 
-                    'height': '500px',
+                    'width': '800px', 
+                    'height': '700px',
                     'margin': "auto", 
                     "display": "block"
                 }
-              ))
+              ), width=8)
             ])
         ], className='container-sm'
 )
 
 @app.callback(
     Output('poi-checklist', 'options'),
-    Input('city-dropdown', 'value')
+    Input('city-dropdown', 'value'),
+    State('poi-checklist', 'options')
 )
-def update_checklist(value):
+def update_checklist(value, options):
     if value !=None:
-        print("City:", value)
-
         _url = "http://127.0.0.1:8000/poi/city/{value}".format(value=value)
 
         response = requests.request("GET", _url)
 
     poi_list = json.loads(response.json())
-    
-    labels = []
-    for i in range(len(poi_list)):
-        labels.append(poi_list[i]['label'])
 
-    print("labels:", labels)
-
-    return labels
+    return [{ 'label': poi_list[i]['label'], 'value': poi_list[i]['identifier'] } for i in range(len(poi_list))]
 
 if __name__ == '__main__':
    app.run_server(debug=True,host="0.0.0.0", dev_tools_ui=False)   
