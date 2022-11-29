@@ -131,7 +131,7 @@ class Itinerary():
         
         return paths_geojson
 
-    def get_itinerary(self, city: str, labels: list):
+    def get_itinerary(self, city: str, labels: list): # add nb_cluster input argument
         """ Main method called from API
 
         Args:
@@ -149,6 +149,7 @@ class Itinerary():
         df = pd.DataFrame(list(DataBase.get_poi().find(filter={'commune': city})))
         df = df.drop_duplicates(subset='label')
         
+        # Modify Label by identifier
         data = df.loc[df.label.isin(labels.labels), ['identifier', 'label', 'longitude', 'latitude']]
 
         df_cluster = self.clustering_kmeans(data, nb_clusters)

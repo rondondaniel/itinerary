@@ -8,7 +8,8 @@ from bson.json_util import dumps
 mongo = Mongo()
 itinerary = Itinerary()
 
-class Labels(BaseModel):
+class Labels(BaseModel): # Modify name to Itinerary
+    # add nb_cluster payload variable
     labels: list[str] = []
 
 api = FastAPI(
@@ -51,7 +52,7 @@ def get_poi(city:str):
     return dumps(mongo.get_poi_by_city(city), indent=2)
 
 @api.get('/poi/city/{city:str}/itinerary', name="Get optimized itinearary paths")
-def get_itinerary(city: str, labels:Labels):
+def get_itinerary(city: str, labels:Labels): # Modify name to match BaseModel
     """Get all POI information from a city
 
     Args:
@@ -60,7 +61,7 @@ def get_itinerary(city: str, labels:Labels):
     Returns:
        json: A json list with all poi inforamtion
     """
-    return itinerary.get_itinerary(city, labels)
+    return itinerary.get_itinerary(city, labels) # Add new nb_cluster input argument
 
 @api.get('/poi/region/{region:int}', name="Get list of regions")
 def get_poi(region:int):

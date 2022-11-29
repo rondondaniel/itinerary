@@ -4,10 +4,14 @@ import dash_leaflet as dl
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
+import pandas as pd
 import requests
 import json
 
 url = "http://127.0.0.1:8000/poi/city/Bordeaux/itinerary"
+
+# Homemade frontend store
+df_store = pd.DataFrame(columns = ['identifier', 'label', 'longitude', 'latitude'])
 
 # Deprecated, used for testing
 payload = json.dumps({
@@ -37,9 +41,6 @@ headers = {
 
 get_cities = json.loads(requests.request('GET', 'http://127.0.0.1:8000/city').json())
 
-#response = requests.request('GET', url, headers=headers, data=payload)
-#data = response.json()
-
 # Load styles
 #external_stylesheets = ['bootstrap.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=False)
@@ -54,17 +55,24 @@ app.layout = html.Div(
             ),
             dbc.Row([
               dbc.Col([
+                dbc.Input(
+                    placeholder='Durée du séjour',
+                    type='number',
+                ),
                 dcc.Dropdown(
+                    placeholder='Ville ...',
                     options=get_cities,
                     id='city-dropdown'
                 ),
                 dbc.Checklist(
                     id='poi-checklist',
                     labelCheckedClassName="text-success",
-                    input_checked_style={'margin-right': '10px'},
+                    input_checked_style={
+                      'margin-right': '10px'
+                    },
                     class_name='mb-3',
                     style={
-                    'height': '700px',
+                    'height': '662px',
                     'margin': "auto", 
                     "display": "block",
                     "overflow-y": "scroll"
@@ -74,7 +82,10 @@ app.layout = html.Div(
               dbc.Col(dl.Map(
                 [
                     dl.TileLayer(), 
-                    #dl.GeoJSON(data=data)
+                    dl.GeoJSON(
+                        #data=data,
+                        id='map-geojson'
+                    )
                 ],
                 center=(
                     44.844, -0.577
@@ -85,9 +96,18 @@ app.layout = html.Div(
                     'height': '736px',
                     'margin': "auto", 
                     "display": "block"
-                }
+                },
+                id='main-map'
               ), width=8)
-            ])
+            ]),
+            dbc.Row(
+                dbc.Button(
+                    "Lancer Itineraire", 
+                    color='success',
+                    id='btn-itinerary'
+                ),
+                className='d-grid gap-2 col-6 mx-auto'
+            )
         ], className='container-sm'
 )
 
@@ -104,7 +124,26 @@ def update_checklist(city, options):
 
     poi_list = json.loads(response.json())
 
-    return [{ 'label': poi_list[i]['label'], 'value': poi_list[i]['identifier'] } for i in range(len(poi_list))]
+    return [{ 'label': poi_list[i]['label'], 'value': poi_list[i]['identifier'] } \
+               for i in range(len(poi_list))]
+
+@app.callback(
+    Output('map-geojson', 'data'),
+    [Input('btn-itinerary', 'n_clicks'),
+      Input('poi-checklist', 'value')]
+)
+def update_map(click, values):
+  changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+
+  if 'btn-itinerary' in changed_id:
+      print(click)
+      print(values)
+      response = requests.request('GET', url, headers=headers, data=payload)
+      data = response.json()
+
+      return data
+  else:
+      return
 
 if __name__ == '__main__':
    app.run_server(debug=True,host="0.0.0.0", dev_tools_ui=False)   
