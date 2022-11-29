@@ -131,7 +131,7 @@ class Itinerary():
         
         return paths_geojson
 
-    def get_itinerary(self, city: str, labels: list): # add nb_cluster input argument
+    def get_itinerary(self, city: str, labels: dict): # add nb_cluster input argument
         """ Main method called from API
 
         Args:
@@ -144,7 +144,7 @@ class Itinerary():
         """  
 
         # Custers number hard coded. Should be an input.
-        nb_clusters = 4
+        nb_clusters = labels.nb_days
 
         df = pd.DataFrame(list(DataBase.get_poi().find(filter={'commune': city})))
         df = df.drop_duplicates(subset='label')

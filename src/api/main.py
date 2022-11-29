@@ -10,6 +10,7 @@ itinerary = Itinerary()
 
 class Labels(BaseModel): # Modify name to Itinerary
     # add nb_cluster payload variable
+    nb_days: int
     labels: list[str] = []
 
 api = FastAPI(

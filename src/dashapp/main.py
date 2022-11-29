@@ -10,29 +10,11 @@ import json
 
 url = "http://127.0.0.1:8000/poi/city/Bordeaux/itinerary"
 
+#nb_days = 4
+
+
 # Homemade frontend store
 df_store = pd.DataFrame(columns = ['identifier', 'label', 'longitude', 'latitude'])
-
-# Deprecated, used for testing
-payload = json.dumps({
-  "labels": [
-    "La Cité du Vin",
-    "Les Halles de Bacalan",
-    "Bassins de Lumières",
-    "Musée du Vin et du Négoce",
-    "Jardin public",
-    "Parc Bordelais",
-    "Esplanade des Quinconces et le monument aux Girondins",
-    "Grosse Cloche",
-    "Place de la Bourse",
-    "Pont de pierre",
-    "Tour Pey-Berland",
-    "Cathédrale Saint-André",
-    "Porte Cailhau",
-    "Le Puy-Paulin",
-    "Le Canal des 2 Mers à vélo"
-  ]
-})
 
 headers = {
   'Authorization': 'Basic admin:4dm1x',
@@ -58,6 +40,7 @@ app.layout = html.Div(
                 dbc.Input(
                     placeholder='Durée du séjour',
                     type='number',
+                    id='input-days'
                 ),
                 dcc.Dropdown(
                     placeholder='Ville ...',
@@ -130,20 +113,42 @@ def update_checklist(city, options):
 @app.callback(
     Output('map-geojson', 'data'),
     [Input('btn-itinerary', 'n_clicks'),
-      Input('poi-checklist', 'value')]
+      Input('poi-checklist', 'value'),
+      Input('input-days', 'value')]
 )
-def update_map(click, values):
-  changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+def update_map(click, values, nb_days):
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    print(values)
 
-  if 'btn-itinerary' in changed_id:
-      print(click)
-      print(values)
-      response = requests.request('GET', url, headers=headers, data=payload)
-      data = response.json()
+    # Deprecated, used for testing
+    payload = json.dumps({
+      "nb_days": nb_days,
+      "labels": [
+        "La Cité du Vin",
+        "Les Halles de Bacalan",
+        "Bassins de Lumières",
+        "Musée du Vin et du Négoce",
+        "Jardin public",
+        "Parc Bordelais",
+        "Esplanade des Quinconces et le monument aux Girondins",
+        "Grosse Cloche",
+        "Place de la Bourse",
+        "Pont de pierre",
+        "Tour Pey-Berland",
+        "Cathédrale Saint-André",
+        "Porte Cailhau",
+        "Le Puy-Paulin",
+        "Le Canal des 2 Mers à vélo"
+      ]
+    })
 
-      return data
-  else:
-      return
+    if 'btn-itinerary' in changed_id:
+        response = requests.request('GET', url, headers=headers, data=payload)
+        data = response.json()
+
+        return data
+    else:
+        return
 
 if __name__ == '__main__':
    app.run_server(debug=True,host="0.0.0.0", dev_tools_ui=False)   
