@@ -61,9 +61,15 @@ app.layout = html.Div(
                 dbc.Checklist(
                     id='poi-checklist',
                     labelCheckedClassName="text-success",
-                    input_checked_style={'margin-right': '10px'}
+                    input_checked_style={'margin-right': '10px'},
+                    class_name='mb-3',
+                    style={
+                    'height': '700px',
+                    'margin': "auto", 
+                    "display": "block",
+                    "overflow-y": "scroll"
+                }
                 ),
-
               ], width=4),
               dbc.Col(dl.Map(
                 [
@@ -76,7 +82,7 @@ app.layout = html.Div(
                 zoom=12,
                 style={
                     'width': '800px', 
-                    'height': '700px',
+                    'height': '736px',
                     'margin': "auto", 
                     "display": "block"
                 }
@@ -90,9 +96,9 @@ app.layout = html.Div(
     Input('city-dropdown', 'value'),
     State('poi-checklist', 'options')
 )
-def update_checklist(value, options):
-    if value !=None:
-        _url = "http://127.0.0.1:8000/poi/city/{value}".format(value=value)
+def update_checklist(city, options):
+    if city !=None:
+        _url = "http://127.0.0.1:8000/poi/city/{value}".format(value=city)
 
         response = requests.request("GET", _url)
 
