@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from pymongo import MongoClient, errors
 from dotenv import load_dotenv
 import os

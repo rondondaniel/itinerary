@@ -1,4 +1,6 @@
 
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import dash
 import dash_leaflet as dl
 import dash_bootstrap_components as dbc
@@ -10,17 +12,10 @@ import json
 
 url = "http://127.0.0.1:8000/poi/city/Bordeaux/itinerary"
 
-#nb_days = 4
-
-
 # Homemade frontend store
 df_store = pd.DataFrame(columns = ['identifier', 'label', 'longitude', 'latitude'])
 
-headers = {
-  'Authorization': 'Basic admin:4dm1x',
-  'Content-Type': 'application/json'
-}
-
+# Init the dropdown's list of cities
 get_cities = json.loads(requests.request('GET', 'http://127.0.0.1:8000/city').json())
 
 # Load styles
@@ -38,12 +33,12 @@ app.layout = html.Div(
             dbc.Row([
               dbc.Col([
                 dbc.Input(
-                    placeholder='Durée du séjour',
+                    placeholder='Durée...',
                     type='number',
                     id='input-days'
                 ),
                 dcc.Dropdown(
-                    placeholder='Ville ...',
+                    placeholder='Ville...',
                     options=get_cities,
                     id='city-dropdown'
                 ),
@@ -116,30 +111,17 @@ def update_checklist(city, options):
       Input('poi-checklist', 'value'),
       Input('input-days', 'value')]
 )
-def update_map(click, values, nb_days):
+def update_map(click, poi_identifiers, nb_days):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-    print(values)
 
-    # Deprecated, used for testing
+    headers = {
+        'Authorization': 'Basic admin:4dm1x',
+        'Content-Type': 'application/json'
+    }
+    
     payload = json.dumps({
       "nb_days": nb_days,
-      "labels": [
-        "La Cité du Vin",
-        "Les Halles de Bacalan",
-        "Bassins de Lumières",
-        "Musée du Vin et du Négoce",
-        "Jardin public",
-        "Parc Bordelais",
-        "Esplanade des Quinconces et le monument aux Girondins",
-        "Grosse Cloche",
-        "Place de la Bourse",
-        "Pont de pierre",
-        "Tour Pey-Berland",
-        "Cathédrale Saint-André",
-        "Porte Cailhau",
-        "Le Puy-Paulin",
-        "Le Canal des 2 Mers à vélo"
-      ]
+      "identifiers": poi_identifiers
     })
 
     if 'btn-itinerary' in changed_id:

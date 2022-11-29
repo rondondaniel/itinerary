@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import pandas as pd
 import os
 from business_logic import DataBase
@@ -131,7 +133,7 @@ class Itinerary():
         
         return paths_geojson
 
-    def get_itinerary(self, city: str, labels: dict): # add nb_cluster input argument
+    def get_itinerary(self, city: str, labels: dict):
         """ Main method called from API
 
         Args:
@@ -143,14 +145,12 @@ class Itinerary():
                             as multi-polylines packaged in GeoJSON format
         """  
 
-        # Custers number hard coded. Should be an input.
         nb_clusters = labels.nb_days
 
         df = pd.DataFrame(list(DataBase.get_poi().find(filter={'commune': city})))
         df = df.drop_duplicates(subset='label')
         
-        # Modify Label by identifier
-        data = df.loc[df.label.isin(labels.labels), ['identifier', 'label', 'longitude', 'latitude']]
+        data = df.loc[df.identifier.isin(labels.identifiers), ['identifier', 'label', 'longitude', 'latitude']]
 
         df_cluster = self.clustering_kmeans(data, nb_clusters)
         paths = self.get_paths(df_cluster, nb_clusters)

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from fastapi import FastAPI
 from business_logic import Mongo, Itinerary
 from pydantic import BaseModel
@@ -11,7 +13,7 @@ itinerary = Itinerary()
 class Labels(BaseModel): # Modify name to Itinerary
     # add nb_cluster payload variable
     nb_days: int
-    labels: list[str] = []
+    identifiers: list[str] = []
 
 api = FastAPI(
     title ='Vacancy Itenerary API',
