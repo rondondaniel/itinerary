@@ -125,7 +125,8 @@ class Itinerary():
         
         # Dict to create markers and itinerary paths features in GeoJSON format
         # It could be replaced into a new method
-        features = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} for m in marker]
+        features = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} \
+                        for m in marker]
         feature_polyline =  {"type":"Feature","geometry":{"type":"MultiLineString","coordinates":polyline}}
         features.append(feature_polyline)
 
