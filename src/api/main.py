@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from fastapi import FastAPI
+from fastapi import FastAPI,  HTTPException
 from business_logic import Mongo, Itinerary
 from pydantic import BaseModel
 import pandas as pd
@@ -10,7 +10,7 @@ from bson.json_util import dumps
 mongo = Mongo()
 itinerary = Itinerary()
 
-class Labels(BaseModel): # Modify name to Itinerary
+class ItineraryInput(BaseModel):
     # add nb_cluster payload variable
     nb_days: int
     identifiers: list[str] = []
@@ -40,11 +40,17 @@ def get_city():
     Returns:
         list: name of all cities into the database
     """
-    return dumps(mongo.get_city())
+
+    try:
+       cities = dumps(mongo.get_city())
+    except:
+        raise HTTPException(status_code=500, detail='Error getting the names of all cities into the database')
+
+    return cities
 
 @api.get('/poi/city/{city:str}', name="Get list of all POI for a city")
 def get_poi(city:str):
-    """Get all POI information from a city
+    """Get all POI information from a selected city
 
     Args:
         city (str): name of the city
@@ -52,21 +58,29 @@ def get_poi(city:str):
     Returns:
        json: A json list with all poi inforamtion
     """
-    return dumps(mongo.get_poi_by_city(city), indent=2)
+
+    try:
+        poi = dumps(mongo.get_poi_by_city(city), indent=2)
+    except:
+        raise HTTPException(status_code=500, detail='Error getting all POI information from a selected city')
+
+    return poi
 
 @api.get('/poi/city/{city:str}/itinerary', name="Get optimized itinearary paths")
-def get_itinerary(city: str, labels:Labels): # Modify name to match BaseModel
-    """Get all POI information from a city
+def get_itinerary(city: str, inputs:ItineraryInput):
+    """Get itinerary paths from POI information and a selected city
 
     Args:
         city (str): name of the city
-
+        inputs (class ItineraryInput): BaseModel witn number of days and list of
+                                        POI identifiers.
     Returns:
        json: A json list with all poi inforamtion
     """
-    return itinerary.get_itinerary(city, labels) # Add new nb_cluster input argument
 
-@api.get('/poi/region/{region:int}', name="Get list of regions")
-def get_poi(region:int):
-    
-    return region
+    try:
+        itinerary_paths = itinerary.get_itinerary(city, inputs)
+    except:
+        raise HTTPException(status_code=500, detail='Error getting itinerary paths from POI information and a selected city')
+
+    return itinerary_paths

@@ -7,15 +7,10 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from dash import dcc, html
-import pandas as pd
 import requests
 import json
 
 URL = "http://127.0.0.1:8000"
-
-# Emmpty DataFrame with columns
-# To act as a Homemade frontend store
-#df_store = pd.DataFrame(columns=['identifier', 'label', 'longitude', 'latitude'])
 
 # Init the dropdown's list of cities
 path_city = URL + "/city"
@@ -24,6 +19,8 @@ get_cities = json.loads(requests.request('GET', path_city).json())
 # Load styles
 #external_stylesheets = ['bootstrap.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=False)
+
+# Main part of Dash App
 app.layout = html.Div(
         [
             html.H1(
@@ -100,36 +97,34 @@ app.layout = html.Div(
       Input('city-dropdown', 'value'),
       State('poi-checklist', 'options')
 )
-def update_checklist(city, options):
+def update_checklist(city: str, options: list):
+    """_summary_
+
+    Args:
+        city (str): city selected with dropdown component
+        options (list): State handler for the list 
+                            of POI to be displayed on the
+                            cheklist
+
+    Raises:
+        PreventUpdate: prevent the component to update
+                        if city is not yet selected 
+
+    Returns:
+        POI label and values (list of dicts): list of dicts of 
+                              POI to be displayed on the cheklist
+    """
+
     if city !=None:
         _url = URL + "/poi/city/{value}".format(value=city)
 
         response = requests.request("GET", _url)
         poi_data = json.loads(response.json())
-
-        # Store poi data for late use
-        # into a homemade store based on
-        # a pandas DataFrame
-        #df_store['identifier'] = [poi_data[i]['identifier'] for i in range(len(poi_data))]
-        #df_store['label'] = [poi_data[i]['label'] for i in range(len(poi_data))]
-        #df_store['longitude'] = [poi_data[i]['longitude'] for i in range(len(poi_data))]
-        #df_store['latitude'] = [poi_data[i]['latitude'] for i in range(len(poi_data))]
+    else:
+        raise PreventUpdate
         
     return [{ 'label': poi_data[i]['label'], 'value': poi_data[i]['identifier'] } \
                for i in range(len(poi_data))]
-
-@app.callback(
-    Output('markers-geojson', 'data'),
-    [Input('poi-checklist', 'value'),
-      Input('memory-data', 'data')]
-)
-def update_markers(poi_identifiers, df_store):    
-    coordinates = df_store.loc[df_store.identifier.isin(poi_identifiers), ['longitude', 'latitude']].values.tolist()
-    features = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} \
-                        for m in coordinates]
-    markers_geojson = {"type": "FeatureCollection", "features":features}
-
-    return markers_geojson
 
 @app.callback(
     Output('itinerary-geojson', 'data'),
@@ -138,7 +133,24 @@ def update_markers(poi_identifiers, df_store):
       Input('city-dropdown', 'value'),
       Input('input-days', 'value')],
 )
-def update_map(click, poi_identifiers, city, nb_days):
+def update_map(clicks: int, poi_identifiers: list, city: str, nb_days: int):
+    """ Update the map with Itinerary information
+
+    Args:
+        clicks (int): number of clicks on Itinerary button
+        poi_identifiers (list): list of POI identifiers
+        city (str): city selected with dropdown component
+        nb_days (_type_): number of days 
+
+    Raises:
+        PreventUpdate: prevent the component to update
+                        if button is not clicked 
+
+    Returns:
+        data (GeoJSON): markers and polylines in geojson format
+                        markes = POI and polylines = Itinerary paths
+    """
+
     # Get triggered component
     # return its id
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
