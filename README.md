@@ -61,7 +61,7 @@ python -m main.y
 
 Contributors names and contact info
 
-* Laeticia Malingre *laeticia.malingre@gmail.com*
+* Laeticia Malingre - *laeticia.malingre@gmail.com*
 * Marylis Rubrice
 * Daniel Rondon - *rondondaniel@gmail.com*
 

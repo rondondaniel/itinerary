@@ -43,5 +43,3 @@ class Mongo:
 
     def get_poi_by_region(self, region)
 ```
-
-### Neo4j database logic

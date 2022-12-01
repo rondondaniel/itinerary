@@ -16,8 +16,8 @@ class ItineraryInput(BaseModel):
     identifiers: list[str] = []
 
 api = FastAPI(
-    title ='Vacancy Itenerary API',
-    description="API is to query itenerary app databases.",
+    title ='Vacancy Itinerary API',
+    description="API is to query itinerary app databases.",
     version="0.1"
 )
 

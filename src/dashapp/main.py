@@ -7,6 +7,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from dash import dcc, html
+import dash_mantine_components as dmc
 import requests
 import json
 
@@ -14,7 +15,7 @@ URL = "http://127.0.0.1:8000"
 
 # Init the dropdown's list of cities
 path_city = URL + "/city"
-get_cities = json.loads(requests.request('GET', path_city).json())
+cities = json.loads(requests.request('GET', path_city).json())
 
 # Load styles
 #external_stylesheets = ['bootstrap.css']
@@ -23,72 +24,48 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_
 # Main part of Dash App
 app.layout = html.Div(
         [
-            html.H1(
-                'Itineraires de Vacances', 
-                style={
-                  'textAlign': 'center'
-                }, 
-                className='h1'
-            ),
+	   html.Br(), 
             dbc.Row([
               dbc.Col([
-                dbc.Input(
-                    placeholder='Durée...',
-                    type='number',
-                    id='input-days'
-                ),
+                html.Img(src='assets/logo.png', height = '180px'), 
+                html.Br(), html.Br(),
+                dbc.Label("Durée du séjour"),
+                dbc.Input(value = 1, type='number', min=1, max=7, step=1,id='input-days'),
+                html.Br(),
+                dbc.Label("Ville"),
                 dcc.Dropdown(
-                    placeholder='Ville...',
-                    options=get_cities,
+                    placeholder='Choisissez une ville',
+                    options=cities,
                     id='city-dropdown'
                 ),
-                dbc.Checklist(
+	            html.Br(),
+                dbc.Label("Sélection des POI"),
+                dcc.Dropdown(
                     id='poi-checklist',
-                    labelCheckedClassName="text-success",
-                    input_checked_style={
-                      'margin-right': '10px'
-                    },
-                    class_name='mb-3',
-                    style={
-                    'height': '662px',
-                    'margin': "auto", 
-                    "display": "block",
-                    "overflow-y": "scroll"
-                }
-                ),
+                    multi=True),
+                html.Br(),
+                dbc.Row(
+                    dmc.Button(
+                        "Lancer l'itinéraire", 
+                        variant="gradient", gradient={"from": "#50d8bc", "to": "#3c7282", "deg": 60}, 
+                        id='btn-itinerary'),
+                    className='d-grid gap-2 col-6 mx-auto'
+                )
               ], width=4),
               dbc.Col(dl.Map(
                 [
                     dl.TileLayer(), 
                     dl.GeoJSON(
                         #data=data,
+                        zoomToBounds=True,
                         id='itinerary-geojson'
-                    ),
-                    dl.GeoJSON(
-                        id='markers-geojson'
-                    )
-                ],
-                center=(
-                    46.5, 2.2
-                ),
-                zoom=6,
-                style={
-                    'width': '800px', 
-                    'height': '736px',
-                    'margin': "auto", 
-                    "display": "block"
-                },
-                id='main-map'
+                    )],
+                    center=(46.5, 2.2),
+                    zoom=6,
+                    style={'width': '800px', 'height': '700px', 'margin': "auto", 'display': 'block'},
+                    id='main_map'
               ), width=8)
             ]),
-            dbc.Row(
-                dbc.Button(
-                    "Lancer Itineraire", 
-                    color='success',
-                    id='btn-itinerary'
-                ),
-                className='d-grid gap-2 col-6 mx-auto'
-            )
         ], className='container-sm'
 )
 
@@ -102,9 +79,7 @@ def update_checklist(city: str, options: list):
 
     Args:
         city (str): city selected with dropdown component
-        options (list): State handler for the list 
-                            of POI to be displayed on the
-                            cheklist
+        options (list): State handler for the list of POI to be displayed on the cheklist
 
     Raises:
         PreventUpdate: prevent the component to update
@@ -155,10 +130,7 @@ def update_map(clicks: int, poi_identifiers: list, city: str, nb_days: int):
     # return its id
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 
-    headers = {
-        #'Authorization': 'Basic admin:4dm1x',
-        'Content-Type': 'application/json'
-    }
+    headers = {'Content-Type': 'application/json'}
     
     payload = json.dumps({
       "nb_days": nb_days,

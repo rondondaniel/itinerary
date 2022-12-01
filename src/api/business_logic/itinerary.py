@@ -100,6 +100,10 @@ class Itinerary():
 
         marker = []
         polyline = []
+
+        label = clusters_data['label'].values.tolist()
+        marker = clusters_data[['longitude', 'latitude']].values.tolist()
+
         for nb_cluster in range(nb_clusters):
             cluster = clusters_data[clusters_data.Cluster == nb_cluster]
             cluster = cluster.sort_values('sqdist', ascending = False)
@@ -107,26 +111,17 @@ class Itinerary():
 
             coordinates = cluster[['longitude', 'latitude']].values.tolist()
 
-            # 
-            if len(coordinates)==1:
-                # To Improve
-                for c in coordinates:
-                    marker.append(c) 
-            elif len(coordinates) in [2,3]:
-                # To Improve
-                for c in coordinates:
-                    marker.append(c) 
+            if len(coordinates) in [2,3]:
                 polyline.append(self.route(coordinates))
-            else:
-                # To Improve
-                for c in coordinates:
-                    marker.append(c) 
+            elif len(coordinates) > 3:
                 polyline.append(self.route(coordinates, options=True))
         
         # Dict to create markers and itinerary paths features in GeoJSON format
         # It could be replaced into a new method
-        features = [{"type":"Feature","geometry":{"type":"Point","coordinates":m}} \
-                        for m in marker]
+        features = [{
+            "type":"Feature",
+            "geometry":{"type":"Point","coordinates":marker[i]},
+            "properties": {"tooltip": label[i]}} for i in range(len(label))]
         feature_polyline =  {"type":"Feature","geometry":{"type":"MultiLineString","coordinates":polyline}}
         features.append(feature_polyline)
 
