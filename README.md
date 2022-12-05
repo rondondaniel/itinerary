@@ -10,7 +10,13 @@ The user of the application chooses areas / places and the duration of the stay 
 
 ### Dependencies
 
-* Python3.8
+* Python3.10
+* FastAPI
+* Scikit-Learn
+* Open Route Service
+* Dash, Dash-Leaflet
+* Pandas
+* Dotenv
 * MongoDB: pymongo 
 
 ### Installing
@@ -35,19 +41,27 @@ git clone git@github.com:rondondaniel/itinerary.git
 python -m pip install requirements.txt
 ```
 
+#### Create a .env file at root of the project
+```bash
+ORS_API_KEY="YOUR_OPENROUTESERVICE_KEY_HERE"
+CONNECTION_STRING="mongodb://localhost:27017/"
+```
+
 ### Executing program
 
 #### Docker
-* Create a .env file at root of the project
-
 * Run docker-compose file
 ```bash
 docker-compose up -d
 ```
 #### From source
-* Run using python
+* Run API using uvicorn
 ```bash
-python -m main.y
+./src/api/uvicorn main:api --reload
+```
+* Run Dash App using python
+```bash
+./src/dashapp/python main.py
 ```
 
 ## Detailed documentation
