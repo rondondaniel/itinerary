@@ -1,4 +1,4 @@
-# Vacations itinerary
+# Travel itinerary
 
 The objective of the project is the creation of an application able to suggest a route according to certain criteria.
 
